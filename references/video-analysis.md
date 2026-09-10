@@ -247,7 +247,7 @@ ffmpeg -i 输入 -lavfi "showspectrumpic=s=1200x480:legend=1" 频谱.png        
 
 ### 素材引用（视频上传，`<Video N>`）
 
-- **编辑**：summary `[video editing + …]`，`detailed_description` 描述编辑后的成片；一次只下一类改动。
+- **编辑**：summary `[video editing + …]`，`detailed_description` 描述编辑后的成片；多处局部编辑逐条列出、每处与保持约束成对写（formulas.md「编辑任务」），互相影响的大改才拆分任务。
 - **续拍**：summary `[video continuation + …]`，前部承接源片结尾状态再展开。
 - **迁移运镜/动作/节奏**：`<Video 1> (cut and pacing structure): weak_reference`；正文只在结构层面引用，主体内容用新描述。
 - **音色/配乐**：建 `<Audio N>`，按 dialogue.md 写明复制还是参考。
