@@ -45,6 +45,64 @@ The camera holds a static shot as the runner exits the frame.
 
 **切镜原则**：切镜引入新信息（主体/空间/状态/视角/时间）；只是距离或轻微角度变化用运镜句。每个切镜时间写 `At MM:SS.mmm`（毫秒三位）。
 
+## 转场写成事件，不写转场名词
+
+命名特效词（morph / glitch transition）容易被渲染成字面特效；描述转场的**物理事件**更稳：
+
+```text
+Cut at peak motion blur, then settle and snap back into focus.
+The frame whites out in the flash, and the next shot begins in the aftermath.
+She steps through the doorway; the cut lands as the door closes behind her.
+```
+
+## 镜头语言补充词（拿不准就用这些实测顺手的表达）
+
+| 中文意图 | 英文写法 |
+|---|---|
+| 变焦跟焦点 | `rack focus from the foreground bottle to her face` |
+| 甩镜转场 | `a whip pan carries us into the next room` |
+| 手持跟随 | `a handheld follow shot stays half a step behind him` |
+| 三脚架固定 | `a static tripod shot holds the frame` |
+| 升降镜头 | `a slow crane up reveals the whole square` |
+| 广角畸变 | `a wide angle lens with strong perspective distortion` |
+| 胶片质感 | `fine grain, soft highlight halation, gentle exposure breathing` |
+| 暗部噪点 | `coarse noise in the shadows, like pushed film stock` |
+
+## 负向排除短语库（实测负向指令在本模型上异常有效，值得具体写）
+
+写法：写在对应段落末尾，**点名具体易犯项**，比"no glitches"式泛泛排除有用得多；每处只点该场景真正易犯的两三项。分类取用：
+
+**风格保护**（防风格漂移到邻近类型）：
+
+```text
+No soft dissolves or fluid morphs.
+No photorealistic live-action; no flat 2D anime; no plastic toy skin.
+No glass cards, no floating HUD panels, no decorative text walls.
+```
+
+**文字与字符保护**：
+
+```text
+Do not introduce Chinese text, garbled characters, or misspellings.
+No random letters, no watermark, no captions in the lower third.
+```
+
+**画面与动作保护**：
+
+```text
+No tearing, no black frames, no obvious VFX or compositing seams.
+No muzzle flash, no recoil; nobody enters the frame at any edge.
+Do not show giant eyes, split mouths, fangs, or threatening behavior.
+No split screen, no hard cuts unless written, no jump scares.
+```
+
+**一致性保护**（配合 `<Subject N>`）：
+
+```text
+Her face keeps the same proportions in every shot; no identity drift.
+The logo appears exactly as in <Picture 1>; no redrawing or approximation.
+```
+
 ## 风格词库（官方常见风格词）
 
 `Cinematic`、`live-action`、`2D-animated`、`3D CG`、`claymation`（黏土定格）、`watercolor`（水彩）、`vintage film`（复古胶片）。

@@ -31,6 +31,8 @@ description: 按 MiniMax H3 官方提示词规范撰写和拆解 AI 视频提示
 
 入口：海螺 AI 网页版 / MiniMax Hub 桌面端 / API。API 另有 H3-Context-IR 提示词增强任务（官方强烈建议接入；未接入时本 skill 产出的提示词按官方指南结构手写，即为 Context-IR 输出的等价物）。
 
+能力画像（影响写词策略，详表见 model-notes.md「能力画像」）：**强项**——指令式编辑（评测第一，修局部别整条重写）、文字渲染与视觉包装（Logo/花字/海报动效）、参考一致性（素材混搭越全越稳）、口型同步（图 + 音频参考）；**弱项**——高张力影视镜头、极小画面文字、复杂人群调度，写词时主动绕开并向用户对齐预期。
+
 ### 第 1 步：路由——判断用哪套公式
 
 | 用户需求 | 模式 | 公式位置 |
@@ -43,7 +45,7 @@ description: 按 MiniMax H3 官方提示词规范撰写和拆解 AI 视频提示
 | 改一条已有视频（换背景/删元素/改风格） | Ref2VA（video editing） | formulas.md「Ref2VA」+「编辑任务」 |
 | 接着一条视频续拍 | Ref2VA（video continuation） | formulas.md「Ref2VA」+「续拍任务」 |
 | 上传样片要求复刻/仿写（"复刻这条""人物换成X"，带货二创矩阵） | 样片复刻（样片不上传） | 本文件「样片复刻公式」 |
-| 常见垂直题材（产品广告/品牌片/科普/MV/游戏开场…） | 通用 | references/templates.md 模板打底 |
+| 常见垂直题材（产品广告/品牌片/Logo 动效/混剪卡点/科普/MV/游戏开场…） | 通用 | references/templates.md 模板打底 |
 | >15s 完整叙事 | 多段拼接 | formulas.md「长片拼接」 |
 | 提示词太简单想增强 | H3-Context-IR（API） | model-notes.md「Context-IR」 |
 
@@ -122,7 +124,7 @@ description: 按 MiniMax H3 官方提示词规范撰写和拆解 AI 视频提示
 - [ ] 画面文字全部在英文双引号内、保留原文；overall_soundscape 不含台词/配乐；non_diegetic_music 只写配器/速度/强弱，无抽象情绪词；该 N/A 的写了 N/A
 - [ ] Ref2VA：标签无悬空引用、跨段含义一致；summary 任务类型前缀正确（多任务用 ` + ` 组合不重复）；retention 标记与 subject_definitions 的引用角色匹配；生成任务 detailed_description 350–500 英文词
 - [ ] 素材上限：图 ≤9、视频 ≤3 段（每段 2–15s 总 ≤15s）、音频 ≤3 段（同）、混合 ≤12 个文件；提示词 ≤7000 字符
-- [ ] 正文全英文（台词/歌词/画面文字保留原语言）；中文对照、平台设置、素材清单、可调项、假设说明齐
+- [ ] 正文全英文（台词/歌词/画面文字保留原语言）；易崩坏处已有具体负向点名（vocabulary.md 负向短语库），无空泛排除；中文对照、平台设置、素材清单、可调项、假设说明齐
 - [ ] 上传过视频的需求已过第 1.5 步素材角色确认；判为样片复刻的，正文零 `<Video N>` 引用样片、零对比式表述、改动核对单已附
 
 ### 第 6 步：生成结果不满意——失败诊断速查
@@ -132,14 +134,15 @@ description: 按 MiniMax H3 官方提示词规范撰写和拆解 AI 视频提示
 | 症状 | 修改策略 |
 |---|---|
 | 切镜没按时间执行/镜头数不对 | 核对 `At MM:SS.mmm` 递增无跳跃且落在时长内；每镜只保留一个主要事件；镜数对齐时长（参考 templates.md 节拍配比） |
-| 台词没说出来/说了没写的话 | 核对 `<d>` 格式与语言标签；说话人首次出现补身份描述；台词长度与该镜时长匹配，塞太满必丢句 |
+| 台词没说出来/说了没写的话 | 核对 `<d>` 格式与语言标签；说话人首次出现补身份描述；台词按每秒约 2 词核对容量，塞太满必丢句 |
 | 多人说话错乱/张冠李戴 | 每句台词前点名说话人 + `(Sx)`；ID 全片不换号；同框说话人减到 2 人内 |
 | 参考图人物不像/没生效 | `subject_definitions` 补足要跟随的特征清单；`detailed_description` 该主体首次出现处重述参考特征；retention 用 `fully_preserved` 并写明保留项；核对上传顺序 = 标签编号 |
 | 音色没跟随参考音频 | `<Audio N>` 定义写明是 `<Subject N> (Sx)` 的音色参考；说话人台词处重提 "referenced from <Audio N>"；retention 用 `reference` 而非 `fully_copy` |
 | 首尾帧没到达（FL2VA） | 末帧状态挪到最后一个 `[Shot]` 结尾逐项收敛（姿势/构图/光照）；删掉中间多余的切镜，FL2VA 默认单镜 |
 | 开头不像首帧图（I2VA） | `[Shot 1]` 开头逐项锚定图内事实（外观/服装/位置/布局 "remains consistent"），再写后续动作 |
 | 配乐混进环境音/环境音里有台词 | 字段串味——重分三线：台词歌声进主描述、环境动作音进 soundscape、观众向配乐进 music |
-| 画面文字错字/乱码 | 文字放英文双引号内并写明载体与位置；同屏只留一处文字事件；错字率高时减文字镜数 |
+| 画面文字错字/乱码 | 文字放英文双引号内并写明载体与位置；同屏只留一处文字事件；错字率高时减文字镜数；小字是已知弱项，重要小字改后期叠加 |
+| 多人同框乱套/高张力动作失真 | 模型弱项——减同框人数、拆动作、一镜一事；极限运镜需求提前对齐预期（model-notes.md 能力画像） |
 | 运镜乱/画面晃 | 一镜一个运镜句；补 `at slow speed` / `with small amplitude`；无意义运动改 `Static Shot` |
 | 画面运动模糊/动作崩 | 删速度词改物理过程；减单镜动作量；关键动作拆两镜两段 |
 | 整体平庸/没有电影感 | `[Shot 1]` 开头风格+构图句写实具体；每镜引入一个新信息；光影写光位（vocabulary.md）；末镜留记忆点 |
@@ -200,7 +203,7 @@ non_diegetic_music: <1–3 句配器/速度/强弱变化>（无配乐写 N/A）
 - **光影写光位**：侧逆光发丝光、顶光压迫、丁达尔效应、冷暖对比——正文开头一句定风格与构图（官方风格词库：Cinematic / live-action / 2D-animated / 3D CG / claymation / watercolor / vintage film）。
 - **绝对视觉描述**：不用比较式 → 写有视觉锚点的绝对事实（锚点数词、材质、颜色名）。
 - **密度控制**：生成任务 detailed_description 350–500 英文词；对白密集优先保完整台词时间轴不硬凑字数；每镜一个新信息，宁留白不堆料。
-- **排除靠正文短语**：官方结构化指南无负向字段，官方风格 skill 实践是在正文段落末尾用 "no/without" 短语点名排除（如 "no split screen, no random letters"），克制使用、每处只点真正易犯的项。
+- **排除靠正文短语，具体点名**：官方结构化指南无负向字段，但实测负向指令在本模型上异常有效——正文段落末尾用 "no/without" 短语点名该场景**具体易犯项**（"Do not introduce Chinese text, garbled characters, or misspellings"），泛泛的 "no glitches" 式排除无用；短语库见 vocabulary.md。
 - **一致性绑定**：`<Subject N>` 首次出现处写全要跟随的特征（外貌/服装/材质），后续镜沿用标签不重定义；`retention_analysis` 如实标注保真程度。
 
 ## 参考文件
@@ -208,8 +211,8 @@ non_diegetic_music: <1–3 句配器/速度/强弱变化>（无配乐写 N/A）
 - [references/formulas.md](references/formulas.md)——五模式完整公式：T2VA/I2VA/FL2VA/L2VA 三字段式与各自的首行指令句、发展结构；Ref2VA 六段式、任务类型前缀表、引用标签规则、保真标记表、编辑/续拍任务、长片拼接
 - [references/dialogue.md](references/dialogue.md)——台词与声音：说话人 ID、`<d>` 标签、旁白与跨镜台词、画面文字、双声音字段写法、语种边界
 - [references/video-analysis.md](references/video-analysis.md)——参考视频解析：执行协议（缩略图墙/音频验证）、证据分层、逐镜拆解模板（切镜时间提取）、四路用途映射
-- [references/vocabulary.md](references/vocabulary.md)——词库：官方运镜三维表（12 类运镜×幅度×速度）、切镜句式、风格词库、光影、情绪外化、模糊词替代
-- [references/templates.md](references/templates.md)——垂直场景模板（产品广告/品牌片/3D 动画短片/定格科普/MV 歌词/游戏开场/手绘融合…，从官方 8 个风格 skill 提炼）
+- [references/vocabulary.md](references/vocabulary.md)——词库：官方运镜三维表（12 类运镜×幅度×速度）、切镜句式、转场事件写法、镜头语言补充、负向短语库、风格词库、光影、情绪外化、模糊词替代
+- [references/templates.md](references/templates.md)——垂直场景模板（产品广告/品牌片/Logo 动效/音乐混剪卡点/3D 动画短片/定格科普/MV 歌词/游戏开场/手绘融合/对话短剧…）
 - [references/examples.md](references/examples.md)——官方示范提示词精读（5 例，含结构注解）
 - [references/model-notes.md](references/model-notes.md)——模型速查：双变体对比、参数边界、Context-IR、2K 重生成、试错策略、预期管理与留白
 - （docs/）——官方指南与平台文档原文存档（维护用）

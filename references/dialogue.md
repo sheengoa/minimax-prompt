@@ -49,7 +49,9 @@ The man (S1) says in an off-screen voiceover: <d>[English] I still remember that
 
 - 同一句台词/歌词跨切镜：在两部分的连接点都写 `<scenetrans>`，并明确写音频跨镜延续。可用表述：`continues seamlessly across the cut` / `continues uninterrupted into the next shot` / `carries over from the previous shot` / `remains audible across the transition`。
 - 台词被视频结尾截断：用 `<cutoff>`。
-- 台词长度与镜时长匹配：一句 10 个词的台词塞进 1.5 秒的镜必然丢句；对白密集时优先保完整台词时间轴（官方口径），镜数与切镜时间围绕台词排布。
+- 台词长度与镜时长匹配，**按每秒约 2 个英文词核对容量**（实测样本口径：15s 长样本台词 25 词上下，含停顿）；写完台词先数词数再定切镜时间，塞太满必丢句；对白密集时优先保完整台词时间轴（官方口径），镜数与切镜时间围绕台词排布。
+- 同一说话人在每个台词句都点名（`<Subject 2> (S1) …` / `The young woman (S1) …`）——逐句重申身份描述是音色跨镜稳定的最有效手段；同框说话人减到 2 人内。
+- 音色参考素材选 **5–10s 干净单人声**（无 BGM、无混响、无多人重叠）；台词进 `<d>`，音色跟随靠 `<Audio N>` 定义 + 台词处回提 `referenced from <Audio N>`。
 
 ## 画面可见文字
 
@@ -64,6 +66,7 @@ A red neon sign reading "营业中" glows above the doorway.
 ## overall_soundscape 写法
 
 - 1–4 句英文，连续一段，概括全片：环境音（风/雨/交通）、物理动作音（脚步/织物/碰撞）、非语言人声（呼吸/笑声/喘息）。
+- **按"底噪层 → 拟音事件层"构建**：先写持续的环境底（room tone、风雨、机械嗡鸣），再叠明确时间点上的拟音事件（门铃响一次、椅子刮地、面包切片的脆响）——分层的写法比一句"street ambience"的概括显著更准。
 - 台词、歌声、画面内配乐已在主描述字段，**不在本段重复**。
 - 官方示例：
 

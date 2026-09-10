@@ -1,6 +1,6 @@
 # minimax-prompt
 
-MiniMax H3 AI 视频提示词工程 Skill。基于 MiniMax 官方《Video Prompt Writing Guide》（T2VA/I2VA/FL2VA/L2VA）、《Full-Reference Mode Rewrite Output Format Guide》（Ref2VA）与平台文档（原文存档于 docs/）提炼，并吸收官方 8 个风格 skill 的场景方法论。姊妹项目 [seedance-prompt](../seedance-prompt)（即梦）、[kling-prompt](../kling-prompt)（可灵）——三个平台底层提示词范式不同，本 skill 按 H3 范式独立构建，不与其他平台公式混用。目标：用户说出视频需求 → 产出贴合预期、可直接粘贴到海螺 AI（hailuoai.com / hailuoai.video）、MiniMax Hub（hub.minimax.io）或 API 使用的提示词。
+MiniMax H3 AI 视频提示词工程 Skill。基于 MiniMax 官方《Video Prompt Writing Guide》（T2VA/I2VA/FL2VA/L2VA）、《Full-Reference Mode Rewrite Output Format Guide》（Ref2VA）与平台文档（原文存档于 docs/）提炼，吸收官方 8 个风格 skill 的场景方法论，并经跨平台社区实测经验（含中文社区）校准。姊妹项目 [seedance-prompt](../seedance-prompt)（即梦）、[kling-prompt](../kling-prompt)（可灵）——三个平台底层提示词范式不同，本 skill 按 H3 范式独立构建，不与其他平台公式混用。目标：用户说出视频需求 → 产出贴合预期、可直接粘贴到海螺 AI（hailuoai.com / hailuoai.video）、MiniMax Hub（hub.minimax.io）或 API 使用的提示词。
 
 ## 三套范式的核心差异（为什么需要三个 skill）
 
@@ -29,7 +29,7 @@ minimax-prompt/
     ├── formulas.md           # 公式库：五模式公式、Ref2VA 六段式、任务类型前缀表、保真标记表、编辑/续拍、长片拼接
     ├── dialogue.md           # 台词与声音：说话人 ID、<d> 标签、旁白、跨镜台词、画面文字、双声音字段、语种边界
     ├── video-analysis.md     # 参考视频解析：缩略图墙协议、证据分层、切镜时间提取、三线声音预分离、用途映射
-    ├── vocabulary.md         # 词库：官方运镜三维表、切镜句式、风格/光影/情绪外化、模糊词替代
+    ├── vocabulary.md         # 词库：官方运镜三维表、切镜句式、转场事件写法、负向短语库、风格/光影/情绪外化、模糊词替代
     ├── templates.md          # 垂直模板：极简产品广告/品牌片/3D动画短片/定格科普/MV歌词/游戏开场/纸拼贴/实拍×手绘/对话短剧
     ├── examples.md           # 官方案例精读（5 完整案例含结构注解 + 4 极简示例）
     └── model-notes.md        # 模型速查：H3 vs H3-Max、参数边界、Context-IR、2K 重生成、试错策略、留白
@@ -45,7 +45,7 @@ minimax-prompt/
 6. **写词**：按官方字段结构写英文正文；台词进 `<d>`、声音三线分离、运镜查官方三维表、Ref2VA 先定标签与任务类型
 7. **标准交付**：正文（英文）+ 中文对照说明 + 平台设置行 + 素材上传清单（上传顺序 = 标签编号；复刻场景附改动核对单）+ 可调项 + 假设说明
 8. **自检**：字段结构、切镜时间递增、说话人 ID 一致、标签无悬空引用、素材上限、时长边界等清单核对
-9. **失败诊断**：13 条症状 → 修改策略速查（一次只改一个变量）
+9. **失败诊断**：14 条症状 → 修改策略速查（一次只改一个变量）
 
 ## 安装（ZCode / Claude Code 类 Agent）
 
@@ -69,5 +69,5 @@ ln -s /path/to/minimax-prompt ~/.agents/skills/minimax-prompt
 - 官方指南与平台文档原文存档于 `docs/`，H3 模型迭代时以此为校对基准更新公式与参数边界
 - **只收录影响提示词写法的信息**（参数边界、字段结构、写法规则）；计费、API 集成等与写词无关的内容不进本 skill
 - 参数边界（时长 4–15s、素材上限、分辨率档）与 H3 / H3-Max 强绑定，模型升级后需同步修订
-- 官方指南未覆盖的领域（稳定性甜点区量化、负向短语生效程度、口型精度）留白待实测，不编造（见 model-notes.md「预期管理与留白」）
+- 官方指南与社区实测均未覆盖的领域（稳定性甜点区量化、多说话人上限的精确口径）留白待实测，不编造（见 model-notes.md「预期管理与留白」）；社区实测经验（能力画像、负向短语、台词节拍、编辑工作流、中文兼容写法）已内化进正文，不标注来源
 - 官方风格 skill 原文未整体存档（体积大且绑 MiniMax Hub 工作流），其提示词写法层已提炼入 templates.md

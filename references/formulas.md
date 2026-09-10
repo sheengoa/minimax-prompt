@@ -172,7 +172,9 @@ How the reference pictures align with the target video — <Picture 1> (from [Sh
 
 ## 编辑任务与续拍任务（Ref2VA 特例）
 
-- **编辑**：`<Video 1>` 是被编辑的源片；summary 用 `[video editing (+ …)]`，开头 `The target video is an edited version of <Video 1>.`；`retention_analysis` 逐项写明哪些保留（`fully_preserved`）哪些改动（`partially_preserved` + 改动说明）；`detailed_description` 描述的是**编辑后的成片**，在改动处自然引用标签与 `<Video 1>` 的源状态。一次只下一类编辑改动，多改动拆多次任务。
+- **编辑**：`<Video 1>` 是被编辑的源片；summary 用 `[video editing (+ …)]`，开头 `The target video is an edited version of <Video 1>.`；`retention_analysis` 逐项写明哪些保留（`fully_preserved`）哪些改动（`partially_preserved` + 改动说明）；`detailed_description` 描述的是**编辑后的成片**，在改动处自然引用标签与 `<Video 1>` 的源状态。
+- **多处局部编辑可单次完成**（实测：恢复旧照片、清理场景等六处改动一条提示词能全部执行），但每处改动都要**与保持约束成对出现**——`Replace the potted plant with a floor lamp, keeping the sofa, lighting, and camera angle exactly as in <Video 1>.` 多处编辑逐条列出，末尾统一加一句其余元素保持不变；改动之间互相影响（换背景 + 换光照）才拆分任务。
+- **身份保护镜头策略**：参考图人物的一致性随脸部出现时长与角度增加而下降——远景/背影镜头减少脸部渲染压力，关键辨识特征只放在特写镜里充分描述；正文可直接指定 `The face is shown clearly only in the final close-up; wide shots keep her seen from behind or in profile.`
 - **续拍**：summary 用 `[video continuation (+ keyframe completion / audio reference)]`；`detailed_description` 前部承接源片结尾状态（人物位置、光影、机位），再展开新内容；音轨只延续可闻特征时用 `audio reference`。
 - 接力生成的多段（长片拼接）每段都是一次独立生成任务，段间用尾帧作下一段首帧素材（`keyframe completion`）保持连贯。
 
